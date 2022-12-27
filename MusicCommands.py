@@ -87,6 +87,15 @@ class music():
     await ctx.send(embed = em)
 
 
+  async def clear(self, ctx):
+    kleinblue = 0x002199
+    if not self.queue.isEmpty():
+        em = discord.Embed(title="Queue cleared", color=kleinblue)
+        self.queue.clear()
+    else: em = discord.Embed(title="Queue already empty", color=kleinblue)
+    await ctx.send(embed = em)
+
+
   async def pause(self, ctx):
     vc = ctx.voice_client
     if vc.is_playing() and not vc.is_paused():

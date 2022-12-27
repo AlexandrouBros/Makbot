@@ -30,6 +30,10 @@ class commands(commands.Cog, music):
   async def queue(self, ctx):
     await music.queue(self, ctx)
 
+  @commands.command(aliases = ['c'])
+  async def clear(self, ctx):
+    await music.clear(self, ctx)
+
   @commands.command()
   async def pause(self, ctx):
     await music.pause(self, ctx)

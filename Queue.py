@@ -32,7 +32,7 @@ class Queue():
           return song
 
 
-    def length(self):
+    def length(self):       # Return length of queue not including currently playing song 
         return len(self.queue) - 1
 
 
@@ -40,7 +40,7 @@ class Queue():
         return self.queue[pos]
 
 
-    def isEmpty(self):
+    def isEmpty(self):         # Check if there are any songs waiting to be played
         if len(self.queue) in (0,1):
             return True
         else: return False
