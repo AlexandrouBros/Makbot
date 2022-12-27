@@ -26,10 +26,12 @@ class Queue():
 
     def skip(self, ctx):
         if self.queue != []:
-          vc = ctx.voice_client
-          vc.stop()
-          song = self.getNext()
-          return song
+            if len(self.queue) == 1:
+                self.clearall()
+            vc = ctx.voice_client
+            vc.stop()
+            song = self.getNext()
+            return song
 
 
     def length(self):       # Return length of queue not including currently playing song 
@@ -61,6 +63,7 @@ class Queue():
 
     # Remove last song from queue and return the next song
     def getNext(self):
+        print(len(self.queue))
         if self.isEmpty():
             return None
         else:

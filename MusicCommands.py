@@ -4,7 +4,9 @@ import  youtube_dl
 from    Queue import Queue
 import  asyncio
 
-skip = False 
+skip = False  # boolean true when skipping (not implemented yet)
+adding_firstsong = False # boolean true when bot is fetching an initial song to play, i.e a song not from the queue
+creating_queue = False # boolean true when adding a song to an empty queue
 
 FFMPEG_OPTIONS = {
       'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
@@ -48,6 +50,9 @@ class music():
 
 
   async def play(self, ctx, url):
+    global adding_firstsong
+    global creating_queue
+
     await self.join(ctx)
 
     vc = ctx.voice_client
@@ -57,17 +62,22 @@ class music():
         video = ydl.extract_info(url, download=False) #extract info if user input is a URL
       except:
         video = ydl.extract_info(f"ytsearch1:{url}", download=False)['entries'][0] #search youtube for user input and extract info from first search result
-      if vc.is_playing():
+      if vc.is_playing() or adding_firstsong == True:
+            if self.queue.length() == 0:
+                creating_queue = True
             song = await create_qdict(video)
             self.queue.add(song)
             qlen = self.queue.length()
             await self.addqueue_embed(ctx, song['title'], song['thumbnail'], qlen)
+            creating_queue = False
       else:
+            adding_firstsong = True
             loop = asyncio.get_event_loop() # Store event loop in variable
             song =  await create_qdict(video) # Create dictionary to be stored in the queue
             self.queue.add(song) # Store dict in queue
             await self.npembed(ctx, song['title'], song['thumbnail']) #display now playing msg using npembed function
             vc.play(song['audiosource'], after = lambda x=0: self.playnext(ctx, loop))
+            adding_firstsong = False
 
 
   async def nowplaying(self, ctx):
@@ -119,28 +129,11 @@ class music():
 
 
   async def skip(self, ctx):
+    global creating_queue
+
+    while(creating_queue):
+        await asyncio.sleep(0.5)
     ctx.voice_client.stop()
-
-
-#   async def skip_old(self, ctx): # skip happening twice so need to fix (skip and after) 
-#     print('skip')
-#     global skip
-#     skip = True
-#     vc = ctx.voice_client
-#     song = self.queue.skip(ctx)
-#     # await self.npembed(ctx, song['title'], song['thumbnail']) #display now playing msg using npembed function
-#     vc.play(song['audiosource'], after = lambda x=0: self.playnext(ctx))
-
-
-#   def playnextsimple(self, ctx):
-#     print('playnext1')
-#     global skip
-#     if not skip:
-#         vc = ctx.voice_client
-#         song = self.queue.skip(ctx)
-#         print('playnext2')
-#         vc.play(song['audiosource'], after = lambda x=0: self.playnext(ctx))
-#     skip = False
 
 
   def playnext(self, ctx, loop):
@@ -185,3 +178,24 @@ class music():
         embed=discord.Embed(title="For info about the bot and a list of available commands, please see the bot's github:", description='https://github.com/AlexandrouBros/Makbot', url='https://github.com/AlexandrouBros/Makbot', color=purple)
         embed.set_thumbnail(url='https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png')
         await ctx.send(embed=embed)
+
+
+#   async def skip_old(self, ctx): # skip happening twice so need to fix (skip and after) 
+#     print('skip')
+#     global skip
+#     skip = True
+#     vc = ctx.voice_client
+#     song = self.queue.skip(ctx)
+#     # await self.npembed(ctx, song['title'], song['thumbnail']) #display now playing msg using npembed function
+#     vc.play(song['audiosource'], after = lambda x=0: self.playnext(ctx))
+
+
+#   def playnextsimple(self, ctx):
+#     print('playnext1')
+#     global skip
+#     if not skip:
+#         vc = ctx.voice_client
+#         song = self.queue.skip(ctx)
+#         print('playnext2')
+#         vc.play(song['audiosource'], after = lambda x=0: self.playnext(ctx))
+#     skip = False

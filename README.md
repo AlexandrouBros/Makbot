@@ -35,10 +35,6 @@ To be confirmed
 
 ## Known Issues
 
-* Bot still sends message with pause/resume/stopping even if not playing; however, not an issue when bot is not in voice channel.
-
 * There appears to sometimes be slight lag in audio stream, not sure why this happening. It is a rare occurrence.
 
 * Volume can fluctuate a lot depending on audio source, perhaps could be set to a value in code.
-
-* If songs requested while downloading other song, plays preferencially
