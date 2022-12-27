@@ -46,11 +46,9 @@ class commands(commands.Cog, music):
   async def s(self, ctx):
     await music.skip(self, ctx)
 
-# commented command here for testing purposes
-#   @commands.command()
-#   async def embed(self, ctx, body, thumbnail):
-#     await music.npembed(self, ctx, body, thumbnail)
-
+  @commands.command(aliases = ['help', 'Help', 'github'])
+  async def commands(self, ctx):
+    await music.helpembed(self, ctx)
 
 async def setup(client):
   await client.add_cog(commands(client))

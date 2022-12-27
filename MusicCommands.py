@@ -76,14 +76,14 @@ class music():
 
 
   async def queue(self, ctx):  # x * 10 + 1 for upper limit, (x-1)*10 + 1 for lower limit
+    kleinblue = 0x002199
     if not self.queue.isEmpty():
-        kleinblue = 0x002199
         em = discord.Embed(title="Queue", color=kleinblue)
         for i in range(1, 11):
             if i <= self.queue.length():
                 song = self.queue.returnSong(i)
                 em.add_field(name = str(i) + ".", value = song['title'], inline=False)
-    else: em = discord.Embed(title="No songs enqueued", color=0xff2c2c)
+    else: em = discord.Embed(title="No songs enqueued", color=kleinblue)
     await ctx.send(embed = em)
 
 
@@ -169,4 +169,10 @@ class music():
         embed=discord.Embed(title=f"Added to queue\nPosition: {pos}", description=body, color=kleinblue)
         embed.set_thumbnail(url=thumbnail)
         embed.set_footer(text= "Requested by: {}".format(ctx.author.display_name))
+        await ctx.send(embed=embed)
+
+  async def helpembed(self, ctx):
+        purple = 0xA020F0
+        embed=discord.Embed(title="For info about the bot and a list of available commands, please see the bot's github:", description='https://github.com/AlexandrouBros/Makbot', url='https://github.com/AlexandrouBros/Makbot', color=purple)
+        embed.set_thumbnail(url='https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png')
         await ctx.send(embed=embed)
